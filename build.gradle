@@ -1,0 +1,76 @@
+buildscript {
+    repositories {
+        maven {
+            url = "https://jitpack.io/"
+        }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.github.TCBuildMC:CurtainGradle:1.0.1"
+    }
+}
+
+plugins {
+    id "java-library"
+    id "maven-publish"
+}
+
+group = rootProject.maven_group
+version = rootProject.release_version
+base.archivesName = project.archives_base_name
+
+apply plugin: "xyz.tcbuildmc.minecraft.curtaingradle"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor(compileOnly("org.projectlombok:lombok:1.18.32"))
+    annotationProcessor(compileOnly("com.google.auto.service:auto-service:1.1.1"))
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.17.2"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.17.2"
+
+    testImplementation platform('org.junit:junit-bom:5.10.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testAnnotationProcessor(testCompileOnly("org.projectlombok:lombok:1.18.32"))
+}
+
+test {
+    useJUnitPlatform()
+
+    ignoreFailures true
+
+    testLogging {
+        exceptionFormat = "full"
+        events "passed", "skipped", "failed"
+    }
+}
+
+java {
+    withSourcesJar()
+}
+
+jar {
+    manifest {
+        attributes "Implementation-Version": project.version
+    }
+}
+
+compileJava.dependsOn clean
+
+publishing {
+    publications {
+        create("MavenJava", MavenPublication) {
+            from components.java
+            artifactId = project.archives_base_name
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
