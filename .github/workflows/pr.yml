@@ -1,0 +1,32 @@
+name: PR Build
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        java: [21]
+        os: ['ubuntu-latest']
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Setup jdk ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.java }}
+
+      - uses: gradle/wrapper-validation-action@v2
+
+      - name: Fix Gradle permission
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build --stacktrace --no-daemon
