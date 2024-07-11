@@ -30,7 +30,7 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
 
-      - uses: gradle/wrapper-validation-action@v2
+      - uses: gradle/wrapper-validation-action@v3
 
       - name: Fix Gradle permission
         run: chmod +x gradlew
