@@ -1,17 +1,3 @@
-buildscript {
-    repositories {
-        maven {
-            url = "https://jitpack.io/"
-        }
-        gradlePluginPortal()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "com.github.TCBuildMC:CurtainGradle:1.0.1"
-    }
-}
-
 plugins {
     id "java-library"
     id "maven-publish"
@@ -20,8 +6,6 @@ plugins {
 group = rootProject.maven_group
 version = rootProject.release_version
 base.archivesName = project.archives_base_name
-
-apply plugin: "xyz.tcbuildmc.minecraft.curtaingradle"
 
 repositories {
     mavenCentral()
@@ -51,7 +35,19 @@ test {
 }
 
 java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
     withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach { tsk ->
+    tsk.options.release = 8
+    tsk.options.encoding = "UTF-8"
+}
+
+tasks.withType(Test).configureEach { tsk ->
+    tsk.systemProperty "file.encoding", "UTF-8"
 }
 
 jar {
