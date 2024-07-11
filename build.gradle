@@ -42,7 +42,6 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach { tsk ->
-    tsk.options.release.set(8)
     tsk.options.encoding = "UTF-8"
 }
 
