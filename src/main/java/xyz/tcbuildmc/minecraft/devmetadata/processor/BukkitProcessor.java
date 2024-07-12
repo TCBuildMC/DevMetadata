@@ -5,6 +5,9 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.google.auto.service.AutoService;
 import xyz.tcbuildmc.minecraft.devmetadata.annotation.BukkitPlugin;
+import xyz.tcbuildmc.minecraft.devmetadata.bukkit.Command;
+import xyz.tcbuildmc.minecraft.devmetadata.bukkit.Permission;
+import xyz.tcbuildmc.minecraft.devmetadata.bukkit.PermissionChild;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -16,10 +19,7 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({"xyz.tcbuildmc.minecraft.devmetadata.annotation.BukkitPlugin"})
@@ -58,7 +58,7 @@ public class BukkitProcessor extends AbstractProcessor {
             BukkitPlugin plugin = element.getAnnotation(BukkitPlugin.class);
 
             if (plugin.name().isEmpty() || plugin.version().isEmpty()) {
-                this.messager.printMessage(Diagnostic.Kind.ERROR, "Bukkit plugin metadata required specified name/version!");
+                this.messager.printMessage(Diagnostic.Kind.ERROR, "Bukkit plugin metadata requires specified name/version!");
                 return false;
             }
 
@@ -81,6 +81,47 @@ public class BukkitProcessor extends AbstractProcessor {
             metadata.put("softdepend", Arrays.asList(plugin.softdepend()));
             metadata.put("loadbefore", Arrays.asList(plugin.loadbefore()));
             metadata.put("provides", Arrays.asList(plugin.provides()));
+
+            Map<String, Object> permissionMap = new LinkedHashMap<>();
+            for (Permission permission : plugin.permissions()) {
+                if (permission.name().isEmpty()) {
+                    this.messager.printMessage(Diagnostic.Kind.ERROR, "Bukkit plugin metadata permission requires specified name!");
+                    return false;
+                }
+
+                Map<String, Object> node = new LinkedHashMap<>();
+                Map<String, Boolean> children = new LinkedHashMap<>();
+                for (PermissionChild child : permission.children()) {
+                    children.put(child.name(), child.extend());
+                }
+
+                node.put("description", permission.description());
+                node.put("default", permission.defaultPermission().toString());
+                node.put("children", children);
+
+                permissionMap.put(permission.name(), node);
+            }
+
+            metadata.put("permissions", permissionMap);
+
+            Map<String, Object> commandMap = new LinkedHashMap<>();
+            for (Command command : plugin.commands()) {
+                if (command.name().isEmpty()) {
+                    this.messager.printMessage(Diagnostic.Kind.ERROR, "Bukkit plugin metadata command requires specified name!");
+                    return false;
+                }
+
+                Map<String, Object> node = new LinkedHashMap<>();
+                node.put("description", command.description());
+                node.put("usage", command.usage());
+                node.put("aliases", Arrays.asList(command.aliases()));
+                node.put("permission", command.permission());
+                node.put("permission-message", command.permissionMessage());
+
+                commandMap.put(command.name(), node);
+            }
+
+            metadata.put("commands", commandMap);
 
             try {
                 FileObject fileObject = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "plugin.yml");

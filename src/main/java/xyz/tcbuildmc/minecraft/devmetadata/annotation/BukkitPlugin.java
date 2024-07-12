@@ -2,9 +2,7 @@ package xyz.tcbuildmc.minecraft.devmetadata.annotation;
 
 import com.google.common.annotations.Beta;
 import xyz.tcbuildmc.common.annotation.PropertyName;
-import xyz.tcbuildmc.minecraft.devmetadata.bukkit.ApiVersion;
-import xyz.tcbuildmc.minecraft.devmetadata.bukkit.LoadOrder;
-import xyz.tcbuildmc.minecraft.devmetadata.bukkit.PermissionBase;
+import xyz.tcbuildmc.minecraft.devmetadata.bukkit.*;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -44,4 +42,7 @@ public @interface BukkitPlugin {
 
     @Beta
     String[] provides() default {};
+
+    Permission[] permissions() default {};
+    Command[] commands() default {};
 }

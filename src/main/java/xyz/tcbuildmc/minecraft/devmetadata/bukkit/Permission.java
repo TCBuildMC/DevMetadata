@@ -1,4 +1,6 @@
-package xyz.tcbuildmc.minecraft.devmetadata.annotation;
+package xyz.tcbuildmc.minecraft.devmetadata.bukkit;
+
+import xyz.tcbuildmc.common.annotation.PropertyName;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,12 +9,12 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
-public @interface BungeeCordPlugin {
+public @interface Permission {
     String name();
-    String version() default "";
-    String author() default "";
-    String[] depends() default {};
-    String[] softDepends() default {};
     String description() default "";
-    String[] libraries() default {};
+
+    @PropertyName("default")
+    PermissionBase defaultPermission() default PermissionBase.OP;
+
+    PermissionChild[] children() default {};
 }
