@@ -74,6 +74,7 @@ public class BukkitProcessor extends AbstractProcessor {
             metadata.put("folia-supported", plugin.supportsFolia());
             metadata.put("api-version", plugin.apiVersion().toString());
             metadata.put("load", plugin.load().name());
+            metadata.put("prefix", (plugin.prefix().isEmpty() ? plugin.name() : plugin.prefix()));
             metadata.put("default-permission", plugin.defaultPermission().toString());
             metadata.put("libraries", Arrays.asList(plugin.libraries()));
             metadata.put("depend", Arrays.asList(plugin.depend()));

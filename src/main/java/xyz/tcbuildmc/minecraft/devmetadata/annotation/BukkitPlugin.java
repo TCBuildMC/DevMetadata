@@ -30,6 +30,7 @@ public @interface BukkitPlugin {
     ApiVersion apiVersion() default ApiVersion.LEGACY;
 
     LoadOrder load() default LoadOrder.POSTWORLD;
+    String prefix() default "";
 
     @PropertyName("default-permission")
     PermissionBase defaultPermission() default PermissionBase.OP;
