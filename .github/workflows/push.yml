@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        java: [21]
+        java: [8]
         os: ['ubuntu-latest']
 
     runs-on: ${{ matrix.os }}
@@ -53,4 +53,14 @@ jobs:
         with:
           name: DevMetadata-${{ steps.prop_info.outputs.release_version }}-${{ env.SHORT_SHA }}
           path: |
-           build/libs
+            build/libs
+
+      - name: Create Release
+        if: github.repository_owner == 'TCBuildMC' && contains(github.event.head_commit.message, '[publish skip]') == false
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "${{ steps.prop_info.outputs.release_version }}"
+          tag_name: "${{ steps.prop_info.outputs.release_version }}"
+          target_commitish: ${{ github.event.ref }}
+          generate_release_notes: true
+          token: ${{ secrets.RELEASE_TOKEN }}

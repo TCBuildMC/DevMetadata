@@ -1,9 +1,9 @@
 package xyz.tcbuildmc.minecraft.devmetadata.processor;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.google.auto.service.AutoService;
+import xyz.tcbuildmc.common.config.v0.api.SimpleConfigApi;
+import xyz.tcbuildmc.common.config.v0.api.model.ConfigObject;
+import xyz.tcbuildmc.common.config.v0.api.parser.DefaultParsers;
 import xyz.tcbuildmc.minecraft.devmetadata.annotation.BukkitPlugin;
 import xyz.tcbuildmc.minecraft.devmetadata.bukkit.Command;
 import xyz.tcbuildmc.minecraft.devmetadata.bukkit.Permission;
@@ -125,13 +125,9 @@ public class BukkitProcessor extends AbstractProcessor {
 
             try {
                 FileObject fileObject = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "plugin.yml");
-                YAMLMapper mapper = YAMLMapper.builder()
-                        .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
-                        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                        .build();
 
                 try (OutputStream os = fileObject.openOutputStream()) {
-                    mapper.writer().withDefaultPrettyPrinter().writeValue(os, metadata);
+                    SimpleConfigApi.getInstance().write(Map.class, metadata, os, DefaultParsers.snakeYaml());
                 }
             } catch (IOException e) {
                 this.messager.printMessage(Diagnostic.Kind.ERROR, "Failed to create the plugin metadata file.");
