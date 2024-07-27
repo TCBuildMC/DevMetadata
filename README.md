@@ -5,7 +5,7 @@ Helper to create Minecraft mod/plugin metadata files.
 It's annotation-powered.
 
 ## Add dependency
-[![](https://jitpack.io/v/TCBuildMC/SimpleConfigApi.svg)](https://jitpack.io/#TCBuildMC/SimpleConfigApi)
+[![](https://jitpack.io/v/TCBuildMC/DevMetadata.svg)](https://jitpack.io/#TCBuildMC/DevMetadata)
 
 Add these to your `build.gradle`:
 ```gradle
