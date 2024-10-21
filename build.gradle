@@ -19,7 +19,7 @@ dependencies {
     annotationProcessor(compileOnly("com.google.auto.service:auto-service:1.1.1"))
     implementation "com.github.TCBuildMC:SimpleConfigApi:1.2.3:shaded"
 
-    testImplementation platform('org.junit:junit-bom:5.10.3')
+    testImplementation platform('org.junit:junit-bom:5.11.3')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testAnnotationProcessor(testCompileOnly("org.projectlombok:lombok:1.18.34"))
 }
